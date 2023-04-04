@@ -71,7 +71,7 @@ exports.register = async (req, res) => {
       });
       res.status(200).json({
         user: {
-          name: user.firstName,
+          firstName: user.firstName,
           email: user.email,
           role: user.role,
           photo: user.photo,
@@ -82,4 +82,38 @@ exports.register = async (req, res) => {
       console.log(err);
     }
   };
+
+  exports.userProfileUpdate = async (req,res) => {
+    try {
+      const {firstName,lastName,password} = req.body;
+      let user = UserModel.find({_id:req.user._id})
+      if (firstName.length <1) {
+        return res.json({error: "FirstName Required"})
+      }
+      if (lastName.length <1) {
+        return res.json({error: "LastName Required"})
+      }
+      if (password && password.length <6) {
+        return res.json({error: "Password is required and should be min 6 characters long"})
+      }
+      const hashedPassword = password ? await hashPassword(password):undefined;
+      const updatedData = {
+        firstName: firstName || user.firstName,
+        lastName: lastName || user.lastName,
+        password: hashedPassword || user.password
+      }
+      const updated = await UserModel.findByIdAndUpdate(req.user._id,updatedData,{ new: true });
+      updated.password = undefined;
+      res.json(updated);
+    } catch (err) {
+      console.log(err)
+    }
+  }
   
+  // exports.checkingLogin =  (req,res) => {
+  //   res.json({login:true})
+  // }
+  
+  // exports.checkingAdmin =  (req,res) => {
+  //   res.json({admin:true})
+  // }
