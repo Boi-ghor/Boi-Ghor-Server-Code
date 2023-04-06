@@ -7,6 +7,14 @@ const categorySchema = mongoose.Schema({
     slug: {
         type: String,
         lowercase: true
+    },
+    photoUrl: {
+        type: String,
+        required: true
+    },
+    photoId: {
+        type: String,
+        required: true
     }
 },{
     timestamps: true,

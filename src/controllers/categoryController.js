@@ -1,12 +1,12 @@
 const categoryModel = require("../models/CategoryModel")
 const slugify = require("slugify")
-
+const cloudinary = require("../helpers/imageUpload")
 
 //======== Category Create ============//
 
 exports.create = async (req, res)=>{
     try{
-        const {name} = req.body;
+        const {name, photoUrl, photoId} = req.body;
         if(!name){
             return res.status(401).send({message: "Name is Required"})
         }
@@ -19,9 +19,20 @@ exports.create = async (req, res)=>{
             })
         }
 
+        const file = req?.file?.photo;
+        if(!file){
+            return res.status(401).send({message: "Photo not found"})
+        }
+
+        const hostedPhoto = await cloudinary.uploader.upload(file.tempFilePath, (err, result)=>{
+            console.log(result)
+        })
+
         const category = await new categoryModel({
             name,
-            slug: slugify(name)
+            slug: slugify(name),
+            photoUrl: hostedPhoto.url,
+            photoId: hostedPhoto.public_id
         }).save();
         res.status(201).send({
             success: true,
