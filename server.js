@@ -8,6 +8,7 @@ require("dotenv").config()
 const rateLimit=require('express-rate-limit');
 const morgan = require("morgan")
 const cors = require("cors")
+const fileUpload = require("express-fileupload")
 
 
 // Middleware
@@ -16,6 +17,10 @@ app.use(cors())
 app.use(morgan("dev"))
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
+//fileUpload
+app.use(fileUpload({
+    useTempFiles: true
+}))
 
 
 // Routes Middleware
