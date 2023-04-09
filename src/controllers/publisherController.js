@@ -1,6 +1,6 @@
 const publisherModel = require("../models/Publisher/publisher");
 const slugify = require("slugify");
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("../helpers/imageUpload");
 
 exports.createPublisher = async (req,res) => {
     try {
@@ -14,11 +14,11 @@ exports.createPublisher = async (req,res) => {
             case photo && photo.size > 1000000:
                 return res.json({error: "Image required and it should be less then 1 MB"});
         }
-        cloudinary.config({
-            cloud_name: process.env.CLOUD_NAME,
-            api_key: process.env.API_KEY,
-            api_secret: process.env.API_SECRET
-        }); 
+        // cloudinary.config({
+        //     cloud_name: process.env.CLOUD_NAME,
+        //     api_key: process.env.API_KEY,
+        //     api_secret: process.env.API_SECRET
+        // }); 
         const {url, public_id} = await cloudinary.uploader.upload(photo.tempFilePath, {folder: 'Publisher'});
         const publisher = new publisherModel ({...req.body, slug:slugify(publisherName), photoURL: url, photoId: public_id});
         await publisher.save();

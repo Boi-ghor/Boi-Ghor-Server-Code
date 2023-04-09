@@ -1,6 +1,6 @@
 const slugify = require("slugify");
 const authorModel = require("../models/Author/AuthorModel");
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("../helpers/imageUpload");
 require("dotenv").config()
 
 
@@ -16,12 +16,6 @@ exports.createAuthor = async (req,res) => {
             case photo && photo.size > 1000000:
                 return res.json({error: "Image required and it should be less then 1 MB"});
         }
-        cloudinary.config({
-            cloud_name: process.env.CLOUD_NAME,
-            api_key: process.env.API_KEY,
-            api_secret: process.env.API_SECRET
-        });
-          
         const {url, public_id} = await cloudinary.uploader.upload(photo.tempFilePath, {folder: 'Author'});
         const author = new authorModel ({...req.body, slug:slugify(authorName), photoURL: url, photoId: public_id});
         await author.save();
