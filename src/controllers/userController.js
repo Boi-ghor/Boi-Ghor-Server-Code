@@ -8,7 +8,8 @@ require("dotenv").config();
 
 exports.register = async (req, res) => {
     try {
-      const { firstName, lastName, email, password, photo } = req.body;
+        console.log('aschi')
+      const { firstName, lastName, email, password, } = req.body;
       if (!firstName.trim()) {
         return res.json({ error: "firstName is required" });
       }
@@ -31,7 +32,7 @@ exports.register = async (req, res) => {
         lastName,
         email,
         password: hashedPassword,
-        photo
+
       }).save();
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "2d",
@@ -42,7 +43,7 @@ exports.register = async (req, res) => {
           lastName: user.lastName,
           email: user.email,
           role: user.role,
-          photo: user.photo
+          
         },
         token,
       });
@@ -74,6 +75,7 @@ exports.register = async (req, res) => {
       res.status(200).json({
         user: {
           firstName: user.firstName,
+          lastName:user.lastName,
           email: user.email,
           role: user.role,
           photo: user.photo,

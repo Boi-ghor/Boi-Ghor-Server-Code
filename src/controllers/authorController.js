@@ -6,7 +6,7 @@ require("dotenv").config()
 
 exports.createAuthor = async (req,res) => {
     try {
-        const {authorName,aboutAuthor,sellCount} = req.body;
+        const {authorName,aboutAuthor,} = req.body;
         const {photo} = req.files;
         switch (true) {
             case !authorName?.trim():

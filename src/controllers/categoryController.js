@@ -6,20 +6,21 @@ const cloudinary = require("../helpers/imageUpload")
 
 exports.create = async (req, res)=>{
     try{
-        const {name, photoUrl, photoId} = req.body;
+        const {name} = req.body;
         if(!name){
             return res.status(401).send({message: "Name is Required"})
         }
 
         const existingCategory = await categoryModel.find({ name });
-        if(existingCategory){
+        if(existingCategory.length>0){
             return res.status(200).send({
                 success: false,
                 message: "Category Already Exists"
             })
         }
 
-        const file = req?.file?.photo;
+        const file = req?.files?.photo;
+        console.log(req.file)
         if(!file){
             return res.status(401).send({message: "Photo not found"})
         }
@@ -76,5 +77,72 @@ exports.update = async (req, res)=>{
             error,
             message: "Error in Category"
         })
+    }
+}
+
+//============== Delete Category ==================//
+exports.remove = async (req, res)=>{
+    try{
+        const { id } = req.params;
+        await categoryModel.findByIdAndDelete(id);
+        res.status(200).send({
+            success: true,
+            message: "Category Deleted Successfully",
+        })
+    }catch(error){
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "error while deleting category",
+            error
+        })
+    }
+}
+
+
+//============= List Category ==============//
+exports.list = async (req, res)=>{
+    try{
+        const category = await categoryModel.find({})
+        res.status(200).send({
+            success: true,
+            message: "All Categories List",
+            category
+        })
+    }catch(error){
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "Error while getting all categories",
+            error
+        })
+    }
+}
+
+//=========== Read Category ==============//
+exports.read = async (req, res)=>{
+    try{
+        const Category = await categoryModel.find({slug: req.params.slug})
+        res.json(Category)
+    }catch(error){
+        console.log(error)
+        return res.status(400).json(error.message)
+    }
+}
+
+//================ Book By Category =============//
+exports.booksByCategory = async (req, res)=>{
+    try{
+        const Category = await categoryModel.find({slug: req.params.slug})
+        // Here is Books model implement
+
+        res.status(200).send({
+            success: true,
+            Category,
+            //book
+        })
+    }catch(error){
+        console.log(err)
+
     }
 }
