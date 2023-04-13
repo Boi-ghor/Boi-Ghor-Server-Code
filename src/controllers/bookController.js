@@ -45,4 +45,27 @@ exports.list = async (req, res) => {
     }
   };
 
+  exports.read = async (req, res) => {
+    try {
+        const book = await bookModel.aggregate([
+            {
+                $match: {slug: req.params.slug}
+            },
+            {
+                $lookup: {from:"categories", localField:"category", foreignField:"name", as: "category"}
+            },
+            {
+                $lookup: {from:"authors", localField:"author", foreignField:"authorName", as: "author"}
+            },
+            {
+                $lookup: {from:"publishers", localField:"publisher", foreignField:"publisherName", as: "publisher"}
+            }
+          ])
+  
+      res.json(book);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   
