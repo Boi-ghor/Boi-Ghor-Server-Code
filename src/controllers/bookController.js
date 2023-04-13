@@ -68,4 +68,15 @@ exports.list = async (req, res) => {
     }
   };
 
+  exports.remove = async (req, res) => {
+    try {
+      const book = await bookModel.deleteOne(
+        {_id:req.params.bookId}
+      );
+      res.json(book);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   

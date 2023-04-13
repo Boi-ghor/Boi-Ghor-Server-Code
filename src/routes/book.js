@@ -2,14 +2,15 @@ const express = require("express")
 const router = express.Router()
 const formidable = require('express-formidable-v2');
 
-const { registerSignIn } = require("../middleware/auth");
-const { createBook,list,read } = require("../controllers/bookController");
+const { registerSignIn, isAdmin } = require("../middleware/auth");
+const { createBook,list,read,remove } = require("../controllers/bookController");
 
 
 
 router.post("/createBook",registerSignIn,formidable(),createBook);
 router.get("/books", list);
 router.get("/books/:slug", read);
+router.delete("/books/:bookId", registerSignIn, remove);
 
 
 
