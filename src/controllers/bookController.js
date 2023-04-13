@@ -26,3 +26,23 @@ exports.createBook = async (req,res) => {
         console.log({console: err})
     }
 }
+exports.list = async (req, res) => {
+    try {
+      const books = await bookModel.aggregate([
+        {
+            $lookup: {from:"categories", localField:"category", foreignField:"name", as: "category"}
+        },
+        {
+            $lookup: {from:"authors", localField:"author", foreignField:"authorName", as: "author"}
+        },
+        {
+            $lookup: {from:"publishers", localField:"publisher", foreignField:"publisherName", as: "publisher"}
+        }
+      ])
+      res.json(books);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  

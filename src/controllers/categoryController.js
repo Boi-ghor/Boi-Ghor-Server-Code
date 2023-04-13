@@ -78,3 +78,21 @@ exports.update = async (req, res)=>{
         })
     }
 }
+//============= List Category ==============//
+exports.list = async (req, res)=>{
+    try{
+        const category = await categoryModel.find({})
+        res.status(200).send({
+            success: true,
+            message: "All Categories List",
+            category
+        })
+    }catch(error){
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "Error while getting all categories",
+            error
+        })
+    }
+}
