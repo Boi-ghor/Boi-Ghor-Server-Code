@@ -1,7 +1,7 @@
 const bookModel = require("../models/Book/book");
 const cloudinary = require("../helpers/imageUpload");
 const slugify = require("slugify");
-
+const mongoose=require('mongoose')
 exports.createBook = async (req,res) => {
     try {
         const {bookName,description,price,quantity,sellCount,category,author,publisher} = req.body;
@@ -26,6 +26,7 @@ exports.createBook = async (req,res) => {
         console.log({console: err})
     }
 }
+
 exports.list = async (req, res) => {
     try {
       const books = await bookModel.aggregate([
@@ -80,3 +81,4 @@ exports.list = async (req, res) => {
   };
 
   
+
