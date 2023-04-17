@@ -80,6 +80,7 @@ exports.update = async (req, res)=>{
     }
 }
 
+
 //============== Delete Category ==================//
 exports.remove = async (req, res)=>{
     try{
@@ -100,6 +101,7 @@ exports.remove = async (req, res)=>{
 }
 
 
+
 //============= List Category ==============//
 exports.list = async (req, res)=>{
     try{
@@ -117,6 +119,7 @@ exports.list = async (req, res)=>{
             error
         })
     }
+
 }
 
 //=========== Read Category ==============//
@@ -145,4 +148,5 @@ exports.booksByCategory = async (req, res)=>{
         console.log(err)
 
     }
+
 }
