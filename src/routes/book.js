@@ -8,7 +8,7 @@ const { createBook,list,read,remove } = require("../controllers/bookController")
 
 
 
-router.post("/createBook",registerSignIn,formidable(),createBook);
+router.post("/create-book",registerSignIn,isAdmin,formidable(),createBook);
 router.get("/books", list);
 router.get("/books/:slug", read);
 router.delete("/books/:bookId", registerSignIn, remove);
@@ -16,8 +16,6 @@ router.delete("/books/:bookId", registerSignIn, remove);
 
 
 
-router.post("/create-book",registerSignIn,isAdmin,formidable(),createBook);
-router.get('/books/:id',)
 
 
 

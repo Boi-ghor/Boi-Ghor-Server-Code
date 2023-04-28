@@ -3,8 +3,10 @@ const cloudinary = require("../helpers/imageUpload");
 const slugify = require("slugify");
 const mongoose=require('mongoose')
 exports.createBook = async (req,res) => {
+    console.log("aschi")
     try {
         const {bookName,description,price,quantity,sellCount,category,author,publisher} = req.body;
+        console.log("acchi")
         const {photo} = req.files;
         switch (true) {
             case !bookName?.trim():
@@ -23,7 +25,7 @@ exports.createBook = async (req,res) => {
         await book.save();
         res.json(book)
     } catch (err) {
-        console.log({console: err})
+        console.log(err)
     }
 }
 
