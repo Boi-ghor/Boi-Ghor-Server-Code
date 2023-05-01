@@ -12,14 +12,15 @@ exports.create = async (req, res)=>{
         }
 
         const existingCategory = await categoryModel.find({ name });
-        if(existingCategory){
+        if(existingCategory.length>0){
             return res.status(200).send({
                 success: false,
                 message: "Category Already Exists"
             })
         }
 
-        const file = req?.file?.photo;
+        const file = req?.files?.photo;
+        console.log(req.file)
         if(!file){
             return res.status(401).send({message: "Photo not found"})
         }
@@ -100,6 +101,7 @@ exports.remove = async (req, res)=>{
 }
 
 
+
 //============= List Category ==============//
 exports.list = async (req, res)=>{
     try{
@@ -117,6 +119,7 @@ exports.list = async (req, res)=>{
             error
         })
     }
+
 }
 
 //=========== Read Category ==============//
@@ -145,4 +148,5 @@ exports.booksByCategory = async (req, res)=>{
         console.log(err)
 
     }
+
 }
