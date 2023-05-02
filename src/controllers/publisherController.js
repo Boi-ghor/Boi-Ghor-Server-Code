@@ -14,6 +14,7 @@ exports.createPublisher = async (req,res) => {
             case photo && photo.size > 1000000:
                 return res.json({error: "Image required and it should be less then 1 MB"});
         }
+
         const {url, public_id} = await cloudinary.uploader.upload(photo.tempFilePath, {folder: 'Publisher'});
         const publisher = new publisherModel ({...req.body, photoURL: url, photoId: public_id});
         await publisher.save();
