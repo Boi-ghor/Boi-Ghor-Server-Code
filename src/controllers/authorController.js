@@ -1,4 +1,4 @@
-const slugify = require("slugify");
+  const slugify = require("slugify");
 const authorModel = require("../models/Author/AuthorModel");
 const cloudinary = require("../helpers/imageUpload");
 require("dotenv").config()

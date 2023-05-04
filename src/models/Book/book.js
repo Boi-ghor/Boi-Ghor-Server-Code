@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
 
+const reviewSchema=mongoose.Schema({
+    userId:String,
+    name:String,
+    review:String,
+})
+
+
 const bookSchema = mongoose.Schema({
     bookName: {type: String, required: true, trim: true},
     slug: {type: String, lowercase: true},
@@ -17,7 +24,7 @@ const bookSchema = mongoose.Schema({
     sellCount: {type: Number, default: 0},
     photoURL: {type:String},
     photoId: {type:String},
-    review:[{type:{}}]
+    review:[reviewSchema]
 
 },{timestamps: true, versionKey: false});
 
