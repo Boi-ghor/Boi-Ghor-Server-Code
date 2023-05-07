@@ -1,6 +1,9 @@
 const publisherModel = require("../models/Publisher/publisher");
 const slugify = require("slugify");
 const cloudinary = require("../helpers/imageUpload");
+const {is} = require("braintree/vendor/querystring.node.js.511d6a2/util");
+const bookModel = require("../models/Book/book");
+const authorModel = require("../models/Author/AuthorModel");
 
 exports.createPublisher = async (req,res) => {
     try {
@@ -14,7 +17,8 @@ exports.createPublisher = async (req,res) => {
             case photo && photo.size > 1000000:
                 return res.json({error: "Image required and it should be less then 1 MB"});
         }
-
+        const isPublisher=await publisherModel.find({publisherName})
+        if(isPublisher.length) return res.json({error:"already exists this publisher"})
         const {url, public_id} = await cloudinary.uploader.upload(photo.tempFilePath, {folder: 'Publisher'});
         const publisher = new publisherModel ({...req.body, photoURL: url, photoId: public_id});
         await publisher.save();
@@ -38,8 +42,8 @@ exports.publisherList = async (req,res) => {
 
 exports.publisherDetails = async (req,res) => {
     try {
-        const publisherId = req.params.publisherId;
-        const publisher = await publisherModel.find({_id: publisherId});
+        const {publisherName} = req.params;
+        const publisher = await publisherModel.find({publisherName});
         res.status(200).json({success: true, data: publisher});
     } catch(err) {
         console.log(err);
@@ -66,10 +70,65 @@ exports.updatePublisher = async (req,res) => {
     }
 }
 exports.removePublisher = async (req, res) => {
+    const {publisherName}=req.params
     try {
-      const publisher = await publisherModel.findByIdAndDelete({_id:req.params.id})
-      res.status(200).json({data:publisher, success: true, message: "deleted"});
+        const books=  await bookModel.aggregate([
+            {$match:{publisher:publisherName}}
+        ])
+
+        if(books.length > 0){
+            return res.json({error:"this publisher have a book ,so u cant delete this author"})
+        }else{
+            const {_id,photoId}=await publisherModel.findOne({publisherName});
+            if(!_id && !photoId){
+                return res.json({error:"author name not found"})
+            }
+            await cloudinary.uploader.destroy(photoId);
+            await publisherModel.findByIdAndDelete(_id)
+            return   res.status(200).json({ success: true, message: "deleted successfully"});
+        }
     } catch (err) {
         res.status(500).json({success: false, data: err, message: "delete fail"})
     }
-  };
+};
+
+exports.booksByPublishers=async (req,res)=>{
+    try{
+        const {publisherName}=req.params;
+        const books=  await bookModel.aggregate([
+            {
+                $match: {
+                    publisher:publisherName
+                }
+            },
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "name",
+                    as: "category"
+                }
+            },
+            {
+                $lookup: {
+                    from: "authors",
+                    localField: "author",
+                    foreignField: "authorName",
+                    as: "author"
+                }
+            },
+            {
+                $lookup: {
+                    from: "publishers",
+                    localField: "publisher",
+                    foreignField: "publisherName",
+                    as: "publisher"
+                }
+            }
+        ]);
+        res.json(books)
+    }
+    catch (e) {
+        console.log(e)
+    }
+}

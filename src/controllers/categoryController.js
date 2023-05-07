@@ -1,6 +1,7 @@
 const categoryModel = require("../models/CategoryModel")
 const slugify = require("slugify")
 const cloudinary = require("../helpers/imageUpload")
+const bookModel = require("../models/Book/book");
 
 //======== Category Create ============//
 
@@ -82,23 +83,30 @@ exports.update = async (req, res)=>{
 
 
 //============== Delete Category ==================//
-exports.remove = async (req, res)=>{
-    try{
-        const { id } = req.params;
-        await categoryModel.findByIdAndDelete(id);
-        res.status(200).send({
-            success: true,
-            message: "Category Deleted Successfully",
-        })
-    }catch(error){
-        console.log(error)
-        res.status(500).send({
-            success: false,
-            message: "error while deleting category",
-            error
-        })
+exports.remove = async (req, res) => {
+    const {categoryName}=req.params
+    try {
+        const books=  await bookModel.aggregate([
+            {$match:{category:categoryName}}
+        ])
+
+        if(books.length > 0){
+            return res.json({error:"this category have a book ,so u cant delete this author"})
+        }else{
+            console.log('esechi')
+            const {_id,photoId}=await categoryModel.findOne({name:categoryName});
+            console.log(_id)
+            if(!_id && !photoId){
+                return res.json({error:"author name not found"})
+            }
+            await cloudinary.uploader.destroy(photoId);
+            await categoryModel.findByIdAndDelete(_id)
+            return   res.status(200).json({ success: true, message: "deleted successfully"});
+        }
+    } catch (err) {
+        res.status(500).json({success: false, data: err, message: "delete fail"})
     }
-}
+};
 
 
 
@@ -125,7 +133,7 @@ exports.list = async (req, res)=>{
 //=========== Read Category ==============//
 exports.read = async (req, res)=>{
     try{
-        const Category = await categoryModel.find({slug: req.params.slug})
+        const Category = await categoryModel.findOne({name: req.params.categoryName})
         res.json(Category)
     }catch(error){
         console.log(error)
@@ -136,16 +144,41 @@ exports.read = async (req, res)=>{
 //================ Book By Category =============//
 exports.booksByCategory = async (req, res)=>{
     try{
-        const Category = await categoryModel.find({slug: req.params.slug})
-        // Here is Books model implement
-
-        res.status(200).send({
-            success: true,
-            Category,
-            //book
-        })
-    }catch(error){
-        console.log(err)
+        const {categoryName}=req.params;
+        const books=  await bookModel.aggregate([
+            {
+                $match: {
+                    category:categoryName
+                }
+            },
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "name",
+                    as: "category"
+                }
+            },
+            {
+                $lookup: {
+                    from: "authors",
+                    localField: "author",
+                    foreignField: "authorName",
+                    as: "author"
+                }
+            },
+            {
+                $lookup: {
+                    from: "publishers",
+                    localField: "publisher",
+                    foreignField: "publisherName",
+                    as: "publisher"
+                }
+            }
+        ]);
+        res.json(books)
+    }
+    catch (e) {
 
     }
 

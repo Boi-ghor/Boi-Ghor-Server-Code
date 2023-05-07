@@ -88,10 +88,24 @@ exports.register = async (req, res) => {
     }
   };
 
+
+  exports.getById=async (req,res)=>{
+      try{
+         const {userId} =req.params;
+         const user=await UserModel.find({_id:userId}).select("-password")
+          res.json(user)
+      }
+      catch (e) {
+
+      }
+  }
+
+
   exports.userProfileUpdate = async (req,res) => {
     try {
+        const userId=req.params.userId
       const {firstName,lastName,password} = req.body;
-      let user = UserModel.find({_id:req.user._id})
+      let user = UserModel.find({_id:userId})
       if (firstName.length <1) {
         return res.json({error: "FirstName Required"})
       }
@@ -107,7 +121,7 @@ exports.register = async (req, res) => {
         lastName: lastName || user.lastName,
         password: hashedPassword || user.password
       }
-      const updated = await UserModel.findByIdAndUpdate(req.user._id,updatedData,{ new: true });
+      const updated = await UserModel.findByIdAndUpdate(req.userId,updatedData,{ new: true });
       updated.password = undefined;
       res.json(updated);
     } catch (err) {
@@ -115,13 +129,13 @@ exports.register = async (req, res) => {
     }
   }
   
-  // exports.checkingLogin =  (req,res) => {
-  //   res.json({login:true})
-  // }
+  exports.checkingLogin =  (req,res) => {
+    res.json({login:true})
+  }
   
-  // exports.checkingAdmin =  (req,res) => {
-  //   res.json({admin:true})
-  // }
+  exports.checkingAdmin =  (req,res) => {
+    res.json({admin:true})
+  }
 
   exports.RecoverVerifyEmail=async (req,res)=>{
     let email = req.params.email;
