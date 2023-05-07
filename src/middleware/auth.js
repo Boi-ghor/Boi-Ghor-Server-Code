@@ -21,7 +21,7 @@ exports.isAdmin = async (req, res, next)=>{
             {$match:{_id:req.user._id}}
         ])
         if(user[0].role === 0){
-            return res.status(401).send("Unauthorized")
+            return res.status(401).json("Unauthorized")
         }
         next()
     }catch(err){

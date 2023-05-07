@@ -74,8 +74,8 @@ exports.list = async (req, res) => {
 
   exports.remove = async (req, res) => {
     try {
-      const {photoId} = await bookModel.findOne(
-        {_id:req.params.bookId}
+      const {photoId} = await bookModel.findById(
+        req.params.bookId
       );
 
       if(!photoId) return res.json({error:"photo already deleted"})
@@ -111,7 +111,7 @@ exports.list = async (req, res) => {
             case photo && photo.size > 1000000:
                 return res.json({error: "Image required and it should be less then 1 MB"});
         }
-        const bookDetail = await bookModel.find({_id:req.params.bookId});
+        const bookDetail = await bookModel.findById(req.params.bookId);
         console.log(bookDetail)
         const {result} = await cloudinary.uploader.destroy(bookDetail.photoId);
         const {url, public_id} = await cloudinary.uploader.upload(photo.tempFilePath, {folder: 'Book'});

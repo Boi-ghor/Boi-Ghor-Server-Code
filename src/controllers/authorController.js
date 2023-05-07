@@ -31,7 +31,7 @@ exports.createAuthor = async (req,res) => {
 
 exports.authorList = async (req,res) => {
     try {
-        const authors = await authorModel.find({});
+        const authors = await authorModel.aggregate([]);
         res.status(200).json({success: true, data: authors})
     } catch (err) {
         console.log(err);
@@ -42,8 +42,10 @@ exports.authorList = async (req,res) => {
 exports.authorDetails = async (req,res) => {
     try {
         const authorId = req.params.authorId;
-        const author = await authorModel.find({_id: authorId});
-        res.status(200).json({success: true, data: author})
+        const author = await authorModel.aggregate([
+            {$match:{_id: authorId}}
+        ]);
+        res.status(200).json({success: true, data: author[0]})
     } catch(err) {
         console.log(err);
         res.status(500).json({success: false, data: err, message: "Error in author details"})
@@ -119,12 +121,12 @@ exports.remove = async (req, res) => {
     if(books.length > 0){
         return res.json({error:"this author have a book ,so u cant delete this author"})
     }else{
-            const {_id,photoId}=await authorModel.findOne({authorName:authorName});
-            if(!_id && !photoId){
-                return res.json({error:"author name not found"})
-            }
-        await cloudinary.uploader.destroy(photoId);
-       await authorModel.findByIdAndDelete(_id)
+            const author=await authorModel.aggregate([
+                {$match:{authorName:authorName}}
+            ]);
+
+        await cloudinary.uploader.destroy(author[0].photoId);
+       await authorModel.findByIdAndDelete(author[0]._id)
      return   res.status(200).json({ success: true, message: "deleted successfully"});
     }
     } catch (err) {
