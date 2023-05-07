@@ -17,8 +17,10 @@ exports.registerSignIn = async (req, res, next)=>{
 
 exports.isAdmin = async (req, res, next)=>{
     try{
-        const user = await userModel.findById(req.user._id)
-        if(user.role === 0){
+        const user = await userModel.aggregate([
+            {$match:{_id:req.user._id}}
+        ])
+        if(user[0].role === 0){
             return res.status(401).send("Unauthorized")
         }
         next()
