@@ -40,7 +40,7 @@ app.use("*", (req, res)=>{
 
 // DataBase Connection
 const port = process.env.PORT || 9000
-mongoose.set("strictQuery", false)
+// mongoose.set("strictQuery", false)
 mongoose
         .connect(process.env.DATABASE)
         .then(()=>{
