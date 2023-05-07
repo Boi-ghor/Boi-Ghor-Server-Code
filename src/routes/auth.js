@@ -5,8 +5,8 @@ const {register,login, userProfileUpdate, RecoverVerifyEmail, RecoverVerifyOTP, 
 const { registerSignIn } = require("../middleware/auth.js");
 const {getById, checkingLogin, checkingAdmin} = require("../controllers/userController");
 const {isAdmin} = require("../middleware/auth");
-route.post("/register", register);
-route.post("/login",login);
+route.post("/signup", register);
+route.post("/signin",login);
 route.put("/updateProfile/:userId",registerSignIn,userProfileUpdate);
 route.get("/getProfile/:userId",registerSignIn,getById);
 

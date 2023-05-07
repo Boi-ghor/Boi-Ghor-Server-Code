@@ -15,27 +15,18 @@ exports.register = async (req, res) => {
       if (existingUser) {
         return res.json({ error: "Email is taken" });
       }
-      const hashedPassword = await hashPassword(password); 
+
       const user = await new UserModel({
         firstName,
         lastName,
         email,
-        password: hashedPassword,
+        password,
 
       }).save();
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "2d",
-      });
-      res.status(201).json({
-        user: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          role: user.role,
-          
-        },
-        token,
-      });
+
+      res.status(201).json(user
+
+      );
     } catch (err) {
       console.log(err);
     }
@@ -44,37 +35,30 @@ exports.register = async (req, res) => {
   exports.login = async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log(email,password)
       if (!email) {
         return res.json({ error: "Email is required" });
       }
       if (!password || password.length < 6) {
         return res.json({ error: "Password must be at least 6 characters long" });
       }
-      const user = await UserModel.findOne({ email });
-      if (!user) {
-        return res.json({ error: "User not found" });
-      }else{
-          const match = await comparePassword(password, user.password);
-          if (!match) {
-              return res.json({ error: "Invalid email or password" });
-          }else{
-              const token =await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-                  expiresIn: "2d",
-              });
-              res.status(200).json({
-                  user: {
-                      firstName: user.firstName,
-                      lastName:user.lastName,
-                      email: user.email,
-                      role: user.role,
-                      photo: user.photo,
-                      userId:user._id
-                  },
-                  token,
-              });
+      const user = await UserModel.find({ email,password });
+      if(user.length>0){
+          const token = await jwt.sign({ _id: user[0]._id }, process.env.JWT_SECRET, {
+              expiresIn: "2d",
+          });
+          res.status(201).json({
+              user: {
+                  firstName: user[0].firstName,
+                  lastName: user[0].lastName,
+                  email: user[0].email,
+                  role: user[0].role,
 
-          }
+              },
+              token,
+          });
       }
+
 
 
 
