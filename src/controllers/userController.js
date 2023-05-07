@@ -10,18 +10,7 @@ exports.register = async (req, res) => {
     try {
         console.log('aschi')
       const { firstName, lastName, email, password, } = req.body;
-      if (!firstName.trim()) {
-        return res.json({ error: "firstName is required" });
-      }
-      if (!lastName.trim()) {
-        return res.json({ error: "lastName is required" });
-      }
-      if (!email) {
-        return res.json({ error: "Email is required" });
-      }
-      if (!password || password.length < 6) {
-        return res.json({ error: "Password must be at least 6 characters long" });
-      }
+
       const existingUser = await UserModel.findOne({ email });
       if (existingUser) {
         return res.json({ error: "Email is taken" });
@@ -64,25 +53,32 @@ exports.register = async (req, res) => {
       const user = await UserModel.findOne({ email });
       if (!user) {
         return res.json({ error: "User not found" });
+      }else{
+          const match = await comparePassword(password, user.password);
+          if (!match) {
+              return res.json({ error: "Invalid email or password" });
+          }else{
+              const token =await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+                  expiresIn: "2d",
+              });
+              res.status(200).json({
+                  user: {
+                      firstName: user.firstName,
+                      lastName:user.lastName,
+                      email: user.email,
+                      role: user.role,
+                      photo: user.photo,
+                      userId:user._id
+                  },
+                  token,
+              });
+
+          }
       }
-      const match = await comparePassword(password, user.password);
-      if (!match) {
-        return res.json({ error: "Invalid email or password" });
-      }
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "2d",
-      });
-      res.status(200).json({
-        user: {
-          firstName: user.firstName,
-          lastName:user.lastName,
-          email: user.email,
-          role: user.role,
-          photo: user.photo,
-            userId:user._id
-        },
-        token,
-      });
+
+
+
+
     } catch (err) {
       console.log(err);
     }
