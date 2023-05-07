@@ -51,6 +51,7 @@ exports.register = async (req, res) => {
           res.status(201).json({
               user: {
                   firstName: user[0].firstName,
+                  _id:user[0]._id,
                   lastName: user[0].lastName,
                   email: user[0].email,
                   role: user[0].role,
