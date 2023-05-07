@@ -11,13 +11,12 @@ const { createBook, list, read, remove, updateBook, addReview, filterBook, newBo
 router.post("/create-book",registerSignIn,isAdmin,formidable(),createBook);
 router.get("/books", list);
 router.get("/books/:slug", read);
-router.delete("/books/:bookId", registerSignIn, remove);
-router.put("/books/:bookId",formidable(), updateBook);
+router.put("/books/:bookId",registerSignIn,isAdmin,formidable(), updateBook);
 router.post("/add-review",registerSignIn,addReview);
 router.get('/filter-books',filterBook)
 router.get('/new-books',newBook);
 router.get('/popular-books',popularBooks);
-router.delete('/delete-book/:bookId',remove)
+router.delete('/delete-book/:bookId',registerSignIn,isAdmin,remove)
 
 
 
