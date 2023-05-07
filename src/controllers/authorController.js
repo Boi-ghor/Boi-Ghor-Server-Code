@@ -31,7 +31,7 @@ exports.createAuthor = async (req,res) => {
 
 exports.authorList = async (req,res) => {
     try {
-        const authors = await authorModel.aggregate([]);
+        const authors = await authorModel.find({});
         res.status(200).json({success: true, data: authors})
     } catch (err) {
         console.log(err);
