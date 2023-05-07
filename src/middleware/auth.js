@@ -5,7 +5,7 @@ exports.registerSignIn = async (req, res, next)=>{
     try{
         let decoded = jwt.verify(
             req.headers.authorization,
-            process.env.jWT_SECRET
+            "sohanur653"
         );
         req.user = decoded;
         next()

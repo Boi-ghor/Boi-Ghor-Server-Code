@@ -44,7 +44,7 @@ exports.register = async (req, res) => {
       }
       const user = await  UserModel.aggregate([{$match:req.body}, {$project:{_id:0,email:1,firstName:1,lastName:1,role:1}}])
       if(user.length>0){
-          const token = await jwt.sign({ _id: user[0]._id }, process.env.JWT_SECRET, {
+          const token = await jwt.sign({ _id: user[0]._id }, "sohanur653", {
               expiresIn: "2d",
           });
           res.status(201).json({
