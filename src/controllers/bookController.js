@@ -1,7 +1,19 @@
 const bookModel = require("../models/Book/book");
+const orderModel = require("../models/Order/OrderModel")
 const cloudinary = require("../helpers/imageUpload");
 const slugify = require("slugify");
+const braintree = require("braintree");
 const mongoose=require('mongoose')
+
+// Payment GateWay
+const gateway = new braintree.BraintreeGateway({
+    environment: braintree.Environment.Sandbox,
+    merchantId: process.env.BRAINTREE_MERCHANT_ID,
+    publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+    privateKey: process.env.BRAINTREE_PRIVATE_KEY,
+  });
+  
+
 exports.createBook = async (req,res) => {
     console.log("aschi")
     try {
@@ -134,7 +146,7 @@ exports.addReview=async (req,res)=>{
               { $push: { review: payload } },
               { new: true },)
         if(newReview){
-            res.json({message:"review added successfuly"})
+            res.json({message:"review added successfully"})
         }else{
             res.json({error:"review cannot added"})
         }
@@ -153,5 +165,53 @@ exports.filterBook=async (req,res)=>{
     (e)
     {
 
+    }
+}
+
+//========== Payment Gateway ==============//
+//token
+exports.braintreeToken = async (req, res)=>{
+    try{
+        gateway.clientToken.generate({}, function(err, response){
+            if(err){
+                res.status(500).send(err)
+            }else{
+                res.send(response)
+            }
+        })
+    }catch(err){
+        console.log(err)
+    }
+}
+
+//payment
+exports.braintreePayment = async (req, res)=>{
+    try{
+        const {cart, nonce} = req.body;
+    let total = 0
+    cart.map( (i) => {
+      total += i.price
+    });
+
+    let newTransaction = gateway.transaction.sale({
+      amount: total,
+      paymentMethodNonce: nonce,
+      options: {
+        submitForSettlement: true,
+      },
+    }, function(err, result){
+      if(result){
+        const order = new orderModel({
+          books: cart,
+          payment: result,
+          buyer: req.user._id
+        }).save()
+        res.json(({ok: true}))
+      }else{
+        res.status(500).send(err)
+      }
+    })
+    }catch(err){
+        console.log(err)
     }
 }
