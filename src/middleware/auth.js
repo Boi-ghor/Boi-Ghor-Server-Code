@@ -19,7 +19,7 @@ exports.registerSignIn = async (req, res, next)=>{
 
 exports.isAdmin = async (req, res, next)=>{
     try{
-    id=(req.user._id)
+   const id=(req.user._id)
         const user= await userModel.findById(id)
         console.log(user)
         if(user.role === 0){
