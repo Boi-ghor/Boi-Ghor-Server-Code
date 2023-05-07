@@ -7,7 +7,9 @@ exports.registerSignIn = async (req, res, next)=>{
             req.headers.authorization,
             "sohanur653"
         );
+        console.log(decoded)
         req.user = decoded;
+        console.log(req.user)
         next()
     }catch(err){
         console.log(err)
@@ -17,10 +19,10 @@ exports.registerSignIn = async (req, res, next)=>{
 
 exports.isAdmin = async (req, res, next)=>{
     try{
-        const user = await userModel.aggregate([
-            {$match:{_id:req.user._id}}
-        ])
-        if(user[0].role === 0){
+    id=(req.user._id)
+        const user= await userModel.findById(id)
+        console.log(user)
+        if(user.role === 0){
             return res.status(401).json("Unauthorized")
         }
         next()

@@ -42,8 +42,9 @@ exports.register = async (req, res) => {
       if (!password || password.length < 6) {
         return res.json({ error: "Password must be at least 6 characters long" });
       }
-      const user = await  UserModel.aggregate([{$match:req.body}, {$project:{_id:0,email:1,firstName:1,lastName:1,role:1}}])
+      const user = await  UserModel.aggregate([{$match:req.body}, {$project:{_id:1,email:1,firstName:1,lastName:1,role:1}}])
       if(user.length>0){
+          console.log(user)
           const token = await jwt.sign({ _id: user[0]._id }, "sohanur653", {
               expiresIn: "2d",
           });
