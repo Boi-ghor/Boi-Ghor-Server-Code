@@ -59,6 +59,10 @@ exports.register = async (req, res) => {
               },
               token,
           });
+      }else{
+          res.json({
+              message:"user or password not match"
+          })
       }
 
 
