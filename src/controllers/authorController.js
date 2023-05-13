@@ -112,7 +112,7 @@ exports.updateAuthor = async (req,res) => {
     }
 }
 exports.remove = async (req, res) => {
-    const {authorName}=req.params
+    const {authorName}=req.body;
     try {
         const books=  await bookModel.aggregate([
             {$match:{author:authorName}}

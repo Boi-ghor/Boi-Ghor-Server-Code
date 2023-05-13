@@ -70,7 +70,7 @@ exports.updatePublisher = async (req,res) => {
     }
 }
 exports.removePublisher = async (req, res) => {
-    const {publisherName}=req.params
+    const {publisherName}=req.body;
     try {
         const books=  await bookModel.aggregate([
             {$match:{publisher:publisherName}}
