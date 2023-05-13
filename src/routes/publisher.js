@@ -11,7 +11,7 @@ router.get("/publishers",publisherList);
 router.get("/publishers/:publisherName",publisherDetails);
 router.get('/books-by-publisher/:publisherName',booksByPublishers)
 router.post("/updatePublisher/:id",registerSignIn,isAdmin,updatePublisher);
-router.delete("/deletePublisher/:publisherName",registerSignIn,isAdmin,removePublisher);
+router.delete("/deletePublisher",registerSignIn,isAdmin,removePublisher);
 
 
 

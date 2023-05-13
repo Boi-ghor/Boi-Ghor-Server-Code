@@ -10,10 +10,10 @@ const {registerSignIn, isAdmin} = require("../middleware/auth")
 
 route.post("/category", registerSignIn, isAdmin, create)
 route.put("/category/:id", registerSignIn, isAdmin, update)
-route.delete("/delete-category/:categoryName", registerSignIn, isAdmin, remove)
+route.delete("/delete-category", registerSignIn, isAdmin, remove)
 
 route.get("/categories", list)
-route.get("/category/:categoryName", read)
+route.get("/category/:_id", read)
 route.get("/book-by-category/:categoryName", booksByCategory)
 
 

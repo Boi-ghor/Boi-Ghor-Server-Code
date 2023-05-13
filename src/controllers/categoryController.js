@@ -84,7 +84,7 @@ exports.update = async (req, res)=>{
 
 //============== Delete Category ==================//
 exports.remove = async (req, res) => {
-    const {categoryName}=req.params
+    const {categoryName}=req.body
     try {
         const books=  await bookModel.aggregate([
             {$match:{category:categoryName}}
@@ -133,7 +133,7 @@ exports.list = async (req, res)=>{
 //=========== Read Category ==============//
 exports.read = async (req, res)=>{
     try{
-        const Category = await categoryModel.findOne({name: req.params.categoryName})
+        const Category = await categoryModel.findOne({_id: req.params._id})
         res.json(Category)
     }catch(error){
         console.log(error)
