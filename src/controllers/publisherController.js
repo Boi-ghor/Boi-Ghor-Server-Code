@@ -42,8 +42,8 @@ exports.publisherList = async (req,res) => {
 
 exports.publisherDetails = async (req,res) => {
     try {
-        const {publisherName} = req.params;
-        const publisher = await publisherModel.find({publisherName});
+        const {id} = req.params;
+        const publisher = await publisherModel.findOne({_id:id});
         res.status(200).json({success: true, data: publisher});
     } catch(err) {
         console.log(err);
@@ -94,7 +94,7 @@ exports.removePublisher = async (req, res) => {
 
 exports.booksByPublishers=async (req,res)=>{
     try{
-        const {publisherName}=req.params;
+        const {publisherName}=req.body;
         const books=  await bookModel.aggregate([
             {
                 $match: {

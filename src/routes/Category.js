@@ -13,8 +13,8 @@ route.put("/category/:id", registerSignIn, isAdmin, update)
 route.delete("/delete-category", registerSignIn, isAdmin, remove)
 
 route.get("/categories", list)
-route.get("/category/:_id", read)
-route.get("/book-by-category/:categoryName", booksByCategory)
+route.get("/categories/:_id", read)
+route.get("/book-by-category", booksByCategory)
 
 
 module.exports = route;

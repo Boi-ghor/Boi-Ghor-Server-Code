@@ -41,11 +41,11 @@ exports.authorList = async (req,res) => {
 
 exports.authorDetails = async (req,res) => {
     try {
-        const authorId = req.params.authorId;
-        const author = await authorModel.aggregate([
-            {$match:{_id: authorId}}
-        ]);
-        res.status(200).json({success: true, data: author[0]})
+        const{ authorId }= req.params;
+        const author = await authorModel.findOne(
+            {_id: authorId}
+        );
+        res.status(200).json({success: true, data: author})
     } catch(err) {
         console.log(err);
         res.status(500).json({success: false, data: err, message: "Error in author details"})
@@ -54,7 +54,7 @@ exports.authorDetails = async (req,res) => {
 
 exports.bookByAuthor=async (req,res)=>{
     try{
-      const {authorName}=req.params;
+      const {authorName}=req.body;
         const books=  await bookModel.aggregate([
             {
                 $match: {
