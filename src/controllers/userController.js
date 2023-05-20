@@ -46,7 +46,7 @@ exports.register = async (req, res) => {
       if(user.length>0){
           console.log(user)
           const token = await jwt.sign({ _id: user[0]._id }, "sohanur653", {
-              expiresIn: "2d",
+              expiresIn: "30d",
           });
           res.status(201).json({
               user: {
@@ -121,6 +121,18 @@ exports.register = async (req, res) => {
   
   exports.checkingAdmin =  (req,res) => {
     res.json({admin:true})
+  }
+
+  exports.getAllUsers = async (req,res) => {
+    let users = await UserModel.aggregate([{$match: {}}]);
+    res.status(200).json({status: "success", data: users})
+  }
+
+  exports.makeAdmin = async (req,res) => {
+    let reqBody = req.body;
+    let id = req.params.id;
+    let newAdmin = await UserModel.updateOne({_id: id},reqBody);
+    return res.status(200).json({status: "success", data: newAdmin});
   }
 
   exports.RecoverVerifyEmail=async (req,res)=>{

@@ -94,7 +94,10 @@ exports.removePublisher = async (req, res) => {
 
 exports.booksByPublishers=async (req,res)=>{
     try{
-        const {publisherName}=req.body;
+        // const {publisherName}=req.body;
+        const id = req.params.id;
+        let publisherInfo = await publisherModel.findById({_id:id});
+        const publisherName = publisherInfo.publisherName;
         const books=  await bookModel.aggregate([
             {
                 $match: {
