@@ -144,7 +144,9 @@ exports.read = async (req, res)=>{
 //================ Book By Category =============//
 exports.booksByCategory = async (req, res)=>{
     try{
-        const {categoryName}=req.body;
+        const id = req.params.id;
+        let categoryInfo = await categoryModel.findById({_id:id});
+        const categoryName = categoryInfo.name;
         const books=  await bookModel.aggregate([
             {
                 $match: {

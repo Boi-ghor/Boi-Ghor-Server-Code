@@ -11,7 +11,7 @@ router.get("/authors",authorList);
 router.get("/authors/:authorId",authorDetails);
 router.post("/updateAuthor/:id",registerSignIn,isAdmin,updateAuthor);
 router.delete("/deleteAuthor",registerSignIn,isAdmin,remove);
-router.get('/book-by-author',bookByAuthor)
+router.get('/book-by-author/:id',bookByAuthor)
 
 
 

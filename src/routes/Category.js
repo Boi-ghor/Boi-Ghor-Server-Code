@@ -14,7 +14,7 @@ route.delete("/delete-category", registerSignIn, isAdmin, remove)
 
 route.get("/categories", list)
 route.get("/categories/:_id", read)
-route.get("/book-by-category", booksByCategory)
+route.get("/book-by-category/:id", booksByCategory)
 
 
 module.exports = route;
