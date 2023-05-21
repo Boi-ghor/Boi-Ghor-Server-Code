@@ -131,7 +131,7 @@ exports.register = async (req, res) => {
   exports.makeAdmin = async (req,res) => {
     let reqBody = req.body;
     let id = req.params.id;
-    let newAdmin = await UserModel.updateOne({_id: id},reqBody);
+    let newAdmin = await UserModel.updateOne({_id: id},{role:1});
     return res.status(200).json({status: "success", data: newAdmin});
   }
 
