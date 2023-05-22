@@ -54,13 +54,15 @@ exports.authorDetails = async (req,res) => {
 
 exports.bookByAuthor=async (req,res)=>{
     try{
-        const {id}=req.params;
-        const author=await authorModel.findById(id);
+
+        const id = req.params.id;
+        let authorInfo = await authorModel.findById({_id:id});
+        const authorName = authorInfo.authorName;
 
         const books=  await bookModel.aggregate([
             {
                 $match: {
-                   author:author?.authorName
+                   author:authorName
                 }
             },
             {

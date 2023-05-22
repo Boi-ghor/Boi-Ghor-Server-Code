@@ -9,7 +9,7 @@ const { registerSignIn, isAdmin} = require("../middleware/auth");
 router.post("/createPublisher",registerSignIn,isAdmin,formidable(),createPublisher);
 router.get("/publishers",publisherList);
 router.get("/publishers/:id",publisherDetails);
-router.get('/books-by-publisher',booksByPublishers)
+router.get('/books-by-publisher/:id',booksByPublishers)
 router.post("/updatePublisher/:id",registerSignIn,isAdmin,updatePublisher);
 router.delete("/deletePublisher",registerSignIn,isAdmin,removePublisher);
 

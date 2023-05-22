@@ -8,9 +8,7 @@ exports.CreateOrder = async (req,res) => {
     try {
         // console.log("req",req.user['_id'])
         let postBody = req.body;
-        let userDetails = await UserModel.find({_id: req.user["_id"]})
-        // console.log("createOrder",userDetails[0]['email'])
-        postBody.userEmail = userDetails[0]['email']
+        
         const orderConfirm = await orderModel.create(postBody);
         return res.status(200).json({success:true, data: orderConfirm, message: "order successful"})
     } catch (err) {
