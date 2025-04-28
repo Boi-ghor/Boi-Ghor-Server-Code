@@ -1,9 +1,4 @@
 {
-    "cSpell.words": [
-        "braintree",
-        "cloudinary",
-        "fileupload",
-        "ghor",
-        "Shuvo"
-    ]
+  "cSpell.words": ["braintree", "cloudinary", "fileupload", "ghor", "Shuvo"],
+  "postman.settings.dotenv-detection-notification-visibility": false
 }
