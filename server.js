@@ -38,7 +38,7 @@ app.use("*", (req, res) => {
 });
 
 // DataBase Connection
-const port = process.env.PORT || 9000;
+const port = process.env.PORT || 5656;
 // mongoose.set("strictQuery", false)
 mongoose
   .connect(
